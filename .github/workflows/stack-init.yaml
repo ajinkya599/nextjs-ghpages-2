@@ -28,12 +28,6 @@ jobs:
         run: |
           year="$(date +'%Y')"
           echo "YEAR=$year" >> $GITHUB_ENV
-
-#       - name: substitute user inputs in the files
-#         uses: jacobtomlinson/gha-find-replace@master
-#         with:
-#           find: "hello"
-#           replace: "world"
           
       - name: substitute user inputs in the workflow files
         uses: microsoft/variable-substitution@v1 
@@ -48,17 +42,14 @@ jobs:
           cp -r nextjs-scaffold/* .
           rm -rf nextjs-scaffold
 
-#       - name: stacks framework commit to repository
-#         uses: actions/github-script@v4
-#         with:
-#           script: |
-#             //todo: fixme the commit function/ script.
-
-#             octokit.rest.git.createCommit({
-#               owner,
-#               repo,
-#               message,
-#               tree,
-#               author.name,
-#               author.email
-#             })
+      - name: Configure git
+        run: |
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
+          git remote set-url origin https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}
+          
+      - name: Commit generated code and initialize workflows
+        run: |
+          git add .
+          git commit -m "Generate framework code and initialize workflows"
+          git push origin -u main
