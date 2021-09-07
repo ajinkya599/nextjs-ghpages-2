@@ -29,12 +29,18 @@ jobs:
           year="$(date +'%Y')"
           echo "YEAR=$year" >> $GITHUB_ENV
 
+#       - name: substitute user inputs in the files
+#         uses: jacobtomlinson/gha-find-replace@master
+#         with:
+#           find: "hello"
+#           replace: "world"
+          
       - name: substitute user inputs in the workflow files
         uses: microsoft/variable-substitution@v1 
         with:
           files: '.github/workflows/build.yaml'
         env:
-          ___NODE_VERSION___: '${{ github.event.inputs.NODE_VERSION }}'
+          env.NODE_VERSION: '${{ github.event.inputs.NODE_VERSION }}'
 
       - name: stacks framework code generation
         run: |
